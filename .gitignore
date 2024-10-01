@@ -1,0 +1,21 @@
+# Ignorar el entorno virtual
+venv/
+.env/
+env/
+
+# Ignorar dependencias específicas de Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.whl
+
+# Ignorar archivos relacionados con las dependencias
+pip-log.txt
+pip-delete-this-directory.txt
+*.egg-info/
+.eggs/
+
+# Archivos de configuración específicos del entorno
+.env
+.venv

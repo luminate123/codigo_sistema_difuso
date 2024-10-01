@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dengue Risk Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        label {
+            font-weight: bold;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #218838;
+        }
+
+        .result {
+            margin-top: 20px;
+            font-size: 18px;
+        }
+    </style>
+    <script>
+        async function calculateRisk(event) {
+            event.preventDefault();
+
+            // Get form data
+            const fever = parseFloat(document.getElementById('fever').value);
+            const symptoms = parseInt(document.getElementById('symptoms').value);
+            const platelets = parseInt(document.getElementById('platelets').value);
+
+            // Prepare the request data
+            const requestData = {
+                fever: fever,
+                symptoms: symptoms,
+                platelets: platelets
+            };
+            console.log(requestData);
+
+            // Send POST request to Flask server
+            try {
+                const response = await fetch('http://127.0.0.1:5000/dengue_risk', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(requestData),
+                });
+                const data = await response.json();
+                // Assuming 'dengue_risk' is a property in the response data
+                const dengue_risk = data.dengue_risk;
+                document.getElementById('result').innerHTML = `Dengue Risk: ${dengue_risk}%`;
+                
+
+            } catch (error) {
+                document.getElementById('result').innerHTML = 'Error calculating risk';
+            }
+        }
+    </script>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Dengue Risk Calculator</h1>
+        <form onsubmit="calculateRisk(event)">
+            <label for="fever">Fever (°C):</label>
+            <input type="number" step="0.1" id="fever" name="fever" required>
+
+            <label for="symptoms">Symptoms (0-10):</label>
+            <input type="number" id="symptoms" name="symptoms" min="0" max="10" required>
+
+            <label for="platelets">Platelets (x1000/μL):</label>
+            <input type="number" id="platelets" name="platelets" min="50" max="450" required>
+
+            <button type="submit">Calculate Risk</button>
+        </form>
+
+        <div class="result" id="result"></div>
+    </div>
+</body>
+
+</html>
